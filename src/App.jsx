@@ -102,7 +102,18 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [photos, selectedPhotoIndex]);
   
-  
+  useEffect(() => {
+    const handleArrowKeys = (e) => {
+      if (e.key === 'ArrowRight') {
+        document.querySelector('.swiper-button-next')?.click();
+      } else if (e.key === 'ArrowLeft') {
+        document.querySelector('.swiper-button-prev')?.click();
+      }
+    };
+    window.addEventListener('keydown', handleArrowKeys);
+    return () => window.removeEventListener('keydown', handleArrowKeys);
+  }, []);
+
   return (
     <div className="bg-black text-white h-screen w-screen p-4 flex flex-col overflow-hidden"> {/* Use flex-col */}
       <h1 className="text-3xl font-bold mb-4 flex-shrink-0">📺 Unsplash Smart TV App</h1>

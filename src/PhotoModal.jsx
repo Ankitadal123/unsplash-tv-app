@@ -19,7 +19,7 @@ export default function PhotoModal({ photo, onClose }) {
         <img
           src={photo.urls.regular}
           alt={photo.alt_description || 'Unsplash image'}
-          className="w-full max-h-[60vh] object-contain bg-black"
+          className="w-full h-auto max-h-[60vh] object-contain bg-black"
         />
 
         {/* Info */}

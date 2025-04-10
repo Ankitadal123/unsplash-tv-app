@@ -1,2 +1,8 @@
 @import "tailwindcss";
 
+/* In your app.css or Tailwind config */
+.swiper-slide-active {
+  border: 2px solid white;
+  transform: scale(1.05);
+  transition: transform 0.3s ease, border 0.3s ease;
+}
