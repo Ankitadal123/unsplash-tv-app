@@ -87,6 +87,8 @@ export default function App() {
 
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
   const [modalPhoto, setModalPhoto] = useState(null);
+  const [searchText, setSearchText] = useState(''); 
+
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -117,11 +119,37 @@ export default function App() {
   return (
     <div className="bg-black text-white h-screen w-screen p-4 flex flex-col overflow-hidden"> {/* Use flex-col */}
       <h1 className="text-3xl font-bold mb-4 flex-shrink-0">📺 Unsplash Smart TV App</h1>
+      <div className="mb-4 flex-shrink-0">
+      <div className="relative w-full md:w-1/2 mb-4 flex-shrink-0">
+  <input
+    type="text"
+    value={searchText}
+    onChange={(e) => setSearchText(e.target.value)}
+    placeholder="Search topics..."
+    className="w-full p-2 pr-10 rounded bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+  {searchText && (
+    <button
+      onClick={() => setSearchText('')}
+      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+      aria-label="Clear search"
+    >
+      ❌
+    </button>
+  )}
+</div>
+
+</div>
+
 
       {/* Topics Menu */}
       <div className="flex gap-3 overflow-x-auto mb-6 pb-2 flex-shrink-0">
         {/* Added check for topics length before mapping */}
-        {topics.length > 0 ? topics.map((topic) => (
+        {topics.length > 0 ? topics
+  .filter((topic) =>
+    topic.title.toLowerCase().includes(searchText.toLowerCase())
+  )
+  .map((topic) => (
           <button
             key={topic.id}
             onClick={() => setSelectedTopic(topic.slug)}
