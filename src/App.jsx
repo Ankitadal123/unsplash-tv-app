@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import './app.css';
+import PhotoModal from './PhotoModal';
 
 // Import Swiper core and required modules
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
@@ -7,21 +8,19 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
 import 'swiper/css';
-import 'swiper/css/navigation'; // Make sure navigation styles are imported
+import 'swiper/css/navigation'; 
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
-// --- IMPORTANT ---
-// Replace this with your actual Unsplash Access Key
+
 const ACCESS_KEY = 'ZWzRZF6Ewy5AhXTa9LKLcUpf05ufHpZIdjwGBDMaTnU';
-// Using the key from your example code - make sure it's valid and active
-// const ACCESS_KEY = 'ZWzRZF6Ewy5AhXTa9LKLcUpf05ufHpZIdjwGBDMaTnU';
+
 
 export default function App() {
   const [topics, setTopics] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState(null); // Start as null
   const [photos, setPhotos] = useState([]);
-  // photoGridRef is no longer needed if using Swiper navigation exclusively
+
 
   // Effect to fetch topics
   useEffect(() => {
@@ -86,8 +85,24 @@ export default function App() {
       });
   }, [selectedTopic]); // Dependency array: runs when selectedTopic changes
 
-  // scrollGrid function is removed as Swiper handles navigation
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
+  const [modalPhoto, setModalPhoto] = useState(null);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Enter' && photos.length > 0) {
+        setModalPhoto(photos[selectedPhotoIndex]);
+      }
+      if (e.key === 'Escape') {
+        setModalPhoto(null);
+      }
+    };
+  
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [photos, selectedPhotoIndex]);
+  
+  
   return (
     <div className="bg-black text-white h-screen w-screen p-4 flex flex-col overflow-hidden"> {/* Use flex-col */}
       <h1 className="text-3xl font-bold mb-4 flex-shrink-0">📺 Unsplash Smart TV App</h1>
@@ -117,15 +132,14 @@ export default function App() {
       {/* Added flex-grow to allow Swiper to fill remaining space */}
       <div className="relative flex-grow min-h-0"> {/* Ensure Swiper has space */}
         {/* Removed custom scroll buttons */}
-        {/*
-          Removed the outer div with ref={photoGridRef}
-          Swiper component itself will be the scrollable container
-         */}
+        {
+         }
          {/* Conditionally render Swiper only when photos are loaded or topic selected */}
          {selectedTopic && (
             <Swiper
                 // Make Swiper fill the container
                 style={{ width: '100%', height: '100%' }}
+                onSlideChange={(swiper) => setSelectedPhotoIndex(swiper.activeIndex)} 
                 modules={[Navigation, Pagination, Scrollbar, A11y]}
                 spaceBetween={20} // Adjust spacing as needed
                 slidesPerView={3} // Adjust based on desired look
@@ -157,7 +171,7 @@ export default function App() {
                 {photos.length > 0 ? photos.map((photo) => (
                 <SwiperSlide key={photo.id}>
                     {/* Adjusted styling for the slide content */}
-                    <div className="w-full h-full overflow-hidden rounded-lg shadow-lg bg-gray-800"> {/* Added bg color for loading */}
+                    <div onClick={() => setModalPhoto(photo)} className="w-full h-full overflow-hidden rounded-lg shadow-lg bg-gray-800 cursor-pointer hover:opacity-90 transition"> {/* Added bg color for loading */}
                     <img
                         src={photo.urls.regular} // Use 'regular' or 'small' based on need
                         alt={photo.alt_description || 'Unsplash image'}
@@ -184,6 +198,9 @@ export default function App() {
          )}
       </div>
       {/* Removed custom scroll buttons */}
+      {modalPhoto && (
+      <PhotoModal photo={modalPhoto} onClose={() => setModalPhoto(null)} />
+    )}
     </div>
   );
 }
