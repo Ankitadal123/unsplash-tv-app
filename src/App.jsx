@@ -12,8 +12,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
+const ACCESS_KEY = import.meta.env.VITE_UNSPLASH_ACCESS_KEY;
 
-const ACCESS_KEY = 'ZWzRZF6Ewy5AhXTa9LKLcUpf05ufHpZIdjwGBDMaTnU';
 
 
 export default function App() {
